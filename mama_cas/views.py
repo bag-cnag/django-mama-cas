@@ -80,10 +80,16 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
            Otherwise, the user remains logged out and is forwarded to
            the specified service.
         """
+        import ipdb;
+        #ipdb.set_trace()
         service = request.GET.get('service')
         renew = to_bool(request.GET.get('renew'))
         gateway = to_bool(request.GET.get('gateway'))
-
+        print("get")
+        #import ipdb;
+        print ("the service is "+service)
+        #ipdb.set_trace()
+        service=request.build_absolute_uri().split("service=")[1]
         if renew:
             logger.debug("Renew request received by credential requestor")
         elif gateway and service:
@@ -144,6 +150,8 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
             self.request.session['warn'] = True
 
         service = self.request.GET.get('service')
+        import ipdb
+        #ipdb.set_trace()
         if service:
             st = ServiceTicket.objects.create_ticket(service=service, user=self.request.user, primary=True)
             return redirect(service, params={'ticket': st.ticket})
@@ -161,6 +169,8 @@ class WarnView(NeverCacheMixin, LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         service = request.GET.get('service')
         ticket = request.GET.get('ticket')
+        import ipdb
+        #ipdb.set_trace
 
         if not service_allowed(service):
             return redirect('cas_login')
@@ -194,6 +204,7 @@ class LogoutView(NeverCacheMixin, View):
             service = request.GET.get('url')
         follow_url = getattr(settings, 'MAMA_CAS_FOLLOW_LOGOUT_URL', True)
         logout_user(request)
+        print "here"
         if service and follow_url:
             return redirect(service)
         return redirect('cas_login')
@@ -217,6 +228,7 @@ class ValidateView(NeverCacheMixin, View):
         service = request.GET.get('service')
         ticket = request.GET.get('ticket')
         renew = to_bool(request.GET.get('renew'))
+        print ("validate service is "+service)
 
         try:
             st, attributes, pgt = validate_service_ticket(service, ticket, renew=renew)
@@ -251,6 +263,7 @@ class ServiceValidateView(NeverCacheMixin, CasResponseMixin, View):
         ticket = self.request.GET.get('ticket')
         pgturl = self.request.GET.get('pgtUrl')
         renew = to_bool(self.request.GET.get('renew'))
+        print ("validate view is "+service)
 
         try:
             st, attributes, pgt = validate_service_ticket(service, ticket, pgturl=pgturl, renew=renew)
