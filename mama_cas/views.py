@@ -85,7 +85,7 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
         service = request.GET.get('service')
         renew = to_bool(request.GET.get('renew'))
         gateway = to_bool(request.GET.get('gateway'))
-        if service:
+        if (service and service.find("genomics")!= -1) :
             service=request.build_absolute_uri().split("service=")[1]
         if renew:
             logger.debug("Renew request received by credential requestor")
@@ -195,6 +195,8 @@ class LogoutView(NeverCacheMixin, View):
     redirected to the specified service URL. [CAS 3.0]
     """
     def get(self, request, *args, **kwargs):
+     
+        
         service = request.GET.get('service')
         if not service:
             service = request.GET.get('url')
