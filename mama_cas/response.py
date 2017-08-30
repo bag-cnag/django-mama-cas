@@ -70,6 +70,10 @@ class ValidationResponse(CasResponseBase):
                 for attrib in attributes["groups"]:
                     for name, value in attrib.items():
                         attr = etree.SubElement(attribute_set, self.ns(name))
+                        attr.text = force_text(value)
+                for name, value in attributes.items():
+                    if (name != "groups"):
+                        attr = etree.SubElement(attribute_set, self.ns(name))
                         attr.text = force_text(value)        
             if pgt:
                 proxy_granting_ticket = etree.SubElement(auth_success, self.ns('proxyGrantingTicket'))

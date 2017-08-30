@@ -85,10 +85,14 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
         service = request.GET.get('service')
         renew = to_bool(request.GET.get('renew'))
         gateway = to_bool(request.GET.get('gateway'))
-        if (service and service.find("genomics")!= -1) :
-            service=request.build_absolute_uri().split("service=")[1]
+        import ipdb;
+        #ipdb.set_trace()
+        #if (service  and service.find("genomics")!= -1) :
+        #    service=request.build_absolute_uri().split("service=")[1]
         if renew:
             logger.debug("Renew request received by credential requestor")
+
+  
         elif gateway and service:
             logger.debug("Gateway request received by credential requestor")
             if is_authenticated(request.user):
@@ -97,11 +101,13 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
                     return redirect('cas_warn', params={'service': service, 'ticket': st.ticket})
                 return redirect(service, params={'ticket': st.ticket})
             else:
+                #ipdb.set_trace();  
                 return redirect(service)
         elif is_authenticated(request.user):
             if service:
                 logger.debug("Service ticket request received by credential requestor")
                 st = ServiceTicket.objects.create_ticket(service=service, user=request.user)
+                #ipdb.set_trace();  
                 if self.warn_user():
                     return redirect('cas_warn', params={'service': service, 'ticket': st.ticket})
                 return redirect(service, params={'ticket': st.ticket})
@@ -147,7 +153,7 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
             self.request.session['warn'] = True
 
         service = self.request.GET.get('service')
-
+        import ipdb
         #ipdb.set_trace()
         if service:
             st = ServiceTicket.objects.create_ticket(service=service, user=self.request.user, primary=True)
