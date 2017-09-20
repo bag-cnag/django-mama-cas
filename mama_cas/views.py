@@ -81,12 +81,12 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
            the specified service.
         """
 
-        #ipdb.set_trace()
+        
         service = request.GET.get('service')
         renew = to_bool(request.GET.get('renew'))
         gateway = to_bool(request.GET.get('gateway'))
-        import ipdb;
-        #ipdb.set_trace()
+        
+        
         #if (service  and service.find("genomics")!= -1) :
         #    service=request.build_absolute_uri().split("service=")[1]
         if renew:
@@ -153,7 +153,7 @@ class LoginView(CsrfProtectMixin, NeverCacheMixin, FormView):
             self.request.session['warn'] = True
 
         service = self.request.GET.get('service')
-        import ipdb
+        
         #ipdb.set_trace()
         if service:
             st = ServiceTicket.objects.create_ticket(service=service, user=self.request.user, primary=True)
